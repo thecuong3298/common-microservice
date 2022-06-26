@@ -1,6 +1,7 @@
 package com.common.dto;
 
 import com.common.rest.response.CommonErrorCode;
+import com.common.rest.response.ErrorCodeResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,5 +34,16 @@ public class ResponseWrapper<T> {
     public ResponseWrapper(String code, String message) {
         this.code = code;
         this.message = message;
+    }
+
+    public ResponseWrapper(ErrorCodeResponse errorCode, T data) {
+        this.code = errorCode.getCode();
+        this.message = errorCode.getMessage();
+        this.data = data;
+    }
+
+    public ResponseWrapper(ErrorCodeResponse errorCode) {
+        this.code = errorCode.getCode();
+        this.message = errorCode.getMessage();
     }
 }

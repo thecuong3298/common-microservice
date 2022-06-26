@@ -4,6 +4,7 @@ import com.common.rest.LoggingRequestInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +26,8 @@ public class RestConfig {
     @Primary
     public RestTemplate restTemplate(
             RestTemplateBuilder restTemplateBuilder) {
-        return restTemplateBuilder
-                // fix 401 response throw HttpRetryException
+        // fix 401 response throw HttpRetryException
+        restTemplateBuilder
                 .requestFactory(() -> {
                     final CloseableHttpClient httpClient = HttpClientBuilder
                             .create()
@@ -34,11 +35,13 @@ public class RestConfig {
                             .build();
                     return new BufferingClientHttpRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
                 })
-                .basicAuthentication(restConfigProperties.getBasicClient(), restConfigProperties.getBasicSecret())
                 .interceptors(new LoggingRequestInterceptor())
                 .defaultHeader(HttpHeaders.ACCEPT, "*/*")
                 .setConnectTimeout(Duration.ofSeconds(restConfigProperties.getConnectTimeout()))
-                .setReadTimeout(Duration.ofSeconds(restConfigProperties.getReadTimeout()))
-                .build();
+                .setReadTimeout(Duration.ofSeconds(restConfigProperties.getReadTimeout()));
+        if (Strings.isNotBlank(restConfigProperties.getBasicClient())) {
+            restTemplateBuilder.basicAuthentication(restConfigProperties.getBasicClient(), restConfigProperties.getBasicSecret());
+        }
+        return restTemplateBuilder.build();
     }
 }

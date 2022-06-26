@@ -3,6 +3,7 @@ package com.common.rest;
 import com.common.rest.error.CommonException;
 import com.common.rest.error.TimeoutException;
 import com.common.rest.response.CommonErrorCode;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,7 +21,7 @@ public abstract class CustomHttpTemplate {
     protected abstract RestTemplate getRestTemplate();
 
     protected <R> ResponseEntity<R> callHttp(String url, HttpMethod method, Object requestBody,
-                                             Class<R> clazz, Map<String, ?> paramMap, HttpHeaders headers) {
+                                             ParameterizedTypeReference<R> responseType, Map<String, ?> paramMap, HttpHeaders headers) {
         try {
             HttpEntity<?> httpEntity = new HttpEntity<>(requestBody, headers);
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
@@ -28,7 +29,7 @@ public abstract class CustomHttpTemplate {
                 builder.queryParam(entry.getKey(), entry.getValue());
             }
             return this.getRestTemplate()
-                    .exchange(builder.toUriString(), method, httpEntity, clazz);
+                    .exchange(builder.toUriString(), method, httpEntity, responseType);
         } catch (ResourceAccessException resourceAccessException) {
             if (resourceAccessException.getCause() instanceof SocketTimeoutException) {
                 throw new TimeoutException();
