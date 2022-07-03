@@ -9,7 +9,7 @@
     </parent>
     <groupId>com.common</groupId>
     <artifactId>microservice</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2-SNAPSHOT</version>
     <name>common</name>
     <description>Base config for project microservice</description>
     <properties>
