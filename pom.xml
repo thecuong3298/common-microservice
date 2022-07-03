@@ -91,7 +91,7 @@
     </dependencies>
 
     <scm>
-        <developerConnection>scm:git:git@gitlab.com/common-lib/base-service.git</developerConnection>
+        <developerConnection>scm:git:git@gitlab.com:common-lib/base-service.git</developerConnection>
         <tag>microservice-1.1.1</tag>
     </scm>
 
