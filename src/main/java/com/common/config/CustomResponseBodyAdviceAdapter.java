@@ -25,43 +25,43 @@ import static com.common.config.LoggingConfiguration.REQUEST_ID;
 @ConditionalOnProperty("logging.log-response")
 public class CustomResponseBodyAdviceAdapter implements ResponseBodyAdvice<Object> {
 
-  private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-  @Override
-  public boolean supports(MethodParameter methodParameter,
-                          Class<? extends HttpMessageConverter<?>> aClass) {
-    return true;
-  }
-
-  @Override
-  public Object beforeBodyWrite(Object o,
-                                MethodParameter methodParameter,
-                                MediaType mediaType,
-                                Class<? extends HttpMessageConverter<?>> aClass,
-                                ServerHttpRequest serverHttpRequest,
-                                ServerHttpResponse serverHttpResponse) {
-
-    if (serverHttpRequest instanceof ServletServerHttpRequest &&
-      serverHttpResponse instanceof ServletServerHttpResponse) {
-      this.logResponse(((ServletServerHttpRequest) serverHttpRequest).getServletRequest(), o);
+    @Override
+    public boolean supports(MethodParameter methodParameter,
+                            Class<? extends HttpMessageConverter<?>> aClass) {
+        return true;
     }
 
-    return o;
-  }
+    @Override
+    public Object beforeBodyWrite(Object o,
+                                  MethodParameter methodParameter,
+                                  MediaType mediaType,
+                                  Class<? extends HttpMessageConverter<?>> aClass,
+                                  ServerHttpRequest serverHttpRequest,
+                                  ServerHttpResponse serverHttpResponse) {
 
-  @SneakyThrows
-  private void logResponse(HttpServletRequest httpServletRequest, Object body) {
-    if (httpServletRequest.getRequestURI().contains("medias")) {
-      return;
+        if (serverHttpRequest instanceof ServletServerHttpRequest &&
+                serverHttpResponse instanceof ServletServerHttpResponse) {
+            this.logResponse(((ServletServerHttpRequest) serverHttpRequest).getServletRequest(), o);
+        }
+
+        return o;
     }
-    Object requestId = httpServletRequest.getAttribute(REQUEST_ID);
-    StringBuilder data = new StringBuilder();
-    data.append("\nLOGGING RESPONSE START-----------------------------------\n")
-      .append("[REQUEST-ID]: ").append(requestId).append("\n")
-      .append("[BODY RESPONSE]: ").append("\n\n")
-      .append(objectMapper.writeValueAsString(body))
-      .append("\n\n")
-      .append("LOGGING RESPONSE END-----------------------------------\n");
-    log.info(data.toString());
-  }
+
+    @SneakyThrows
+    private void logResponse(HttpServletRequest httpServletRequest, Object body) {
+        if (httpServletRequest.getRequestURI().contains("medias")) {
+            return;
+        }
+        Object requestId = httpServletRequest.getHeader("request-id");
+        if (requestId == null) {
+            requestId = httpServletRequest.getAttribute(REQUEST_ID);
+        }
+        log.info(
+                "RESPONSE: {}: {}, body: {}, ",
+                REQUEST_ID,
+                requestId,
+                objectMapper.writeValueAsString(body));
+    }
 }

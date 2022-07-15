@@ -2,12 +2,9 @@ package com.common.rest.error;
 
 import com.common.dto.ResponseWrapper;
 import com.common.rest.response.ErrorCodeResponse;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -43,6 +40,11 @@ public class CommonException extends RuntimeException {
     public CommonException(CommonException errorCode) {
         this.code = errorCode.getCode();
         this.message = errorCode.getMessage();
+    }
+
+    public CommonException(String code, String message) {
+        this.code = code;
+        this.message = message;
     }
 }
 

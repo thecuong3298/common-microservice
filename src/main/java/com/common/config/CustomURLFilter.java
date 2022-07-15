@@ -14,40 +14,45 @@ import static com.common.config.LoggingConfiguration.REQUEST_ID;
 @Slf4j
 public class CustomURLFilter implements Filter {
 
-  @Override
-  public void init(FilterConfig filterConfig) {
-	// Nothing here
-  }
-
-  @Override
-  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-      throws IOException, ServletException {
-    String requestId = UUID.randomUUID().toString();
-    servletRequest.setAttribute(REQUEST_ID, requestId);
-    logRequest((HttpServletRequest) servletRequest, requestId);
-    filterChain.doFilter(servletRequest, servletResponse);
-  }
-
-  @Override
-  public void destroy() {
-    // Nothing here
-  }
-
-  private void logRequest(HttpServletRequest request, String requestId) {
-    if (request != null) {
-      StringBuilder data = new StringBuilder();
-      data.append("\nSTART REQUEST------------------------------\n")
-          .append("[REQUEST-ID]: ").append(requestId).append("\n")
-          .append("[PATH]: ").append(replaceUntrustedRequestData(request.getRequestURI())).append("\n")
-          .append("[QUERIES]: ").append(replaceUntrustedRequestData(request.getQueryString())).append("\n");
-      log.info("[DATA]:{}", data);
+    @Override
+    public void init(FilterConfig filterConfig) {
+        // Nothing here
     }
-  }
 
-  private String replaceUntrustedRequestData(String asRequestData) {
-    if (Strings.isNotBlank(asRequestData)) {
-      return asRequestData.replaceAll("[\n\r\t]", "_");
+    @Override
+    public void doFilter(
+            ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
+        logRequest((HttpServletRequest) servletRequest);
+        filterChain.doFilter(servletRequest, servletResponse);
     }
-    return asRequestData;
-  }
+
+    @Override
+    public void destroy() {
+        // Nothing here
+    }
+
+    private void logRequest(HttpServletRequest request) {
+        if (request != null) {
+            String requestId = request.getHeader(REQUEST_ID);
+            if (Strings.isBlank(requestId)) {
+                requestId = UUID.randomUUID().toString();
+            }
+            request.setAttribute(REQUEST_ID, requestId);
+            log.info(
+                    "INCOMING REQUEST: {}: {}, method: {}, url: {}, queries: {}",
+                    REQUEST_ID,
+                    requestId,
+                    request.getMethod(),
+                    replaceUntrustedRequestData(request.getRequestURI()),
+                    replaceUntrustedRequestData(request.getQueryString()));
+        }
+    }
+
+    private String replaceUntrustedRequestData(String asRequestData) {
+        if (Strings.isNotBlank(asRequestData)) {
+            return asRequestData.replaceAll("[\n\r\t]", "_");
+        }
+        return asRequestData;
+    }
 }

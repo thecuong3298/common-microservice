@@ -47,13 +47,10 @@ public class CustomRequestBodyAdviceAdapter extends RequestBodyAdviceAdapter {
       return;
     }
     Object requestId = httpServletRequest.getAttribute(REQUEST_ID);
-    StringBuilder data = new StringBuilder();
-    data.append("\nLOGGING REQUEST BODY START-----------------------------------\n")
-      .append("[REQUEST-ID]: ").append(requestId).append("\n")
-      .append("[BODY REQUEST]: ").append("\n\n")
-      .append(objectMapper.writeValueAsString(body))
-      .append("\n\n")
-      .append("LOGGING REQUEST BODY END-----------------------------------\n");
-    log.info(data.toString());
+    log.info(
+            "BODY INCOMING REQUEST: {}: {}, body: {}, ",
+            REQUEST_ID,
+            requestId,
+            objectMapper.writeValueAsString(body));
   }
 }

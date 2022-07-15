@@ -13,7 +13,7 @@ public class LoggingProperties {
 
     private Boolean logResponse = false;
 
-    private Logstash logstash;
+    private Logstash logstash = new Logstash();
 
     @Data
     public static class Logstash {
