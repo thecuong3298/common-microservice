@@ -3,6 +3,7 @@ package com.common.config;
 import feign.Logger;
 import feign.RequestInterceptor;
 import feign.codec.ErrorDecoder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestAttributes;
@@ -15,7 +16,7 @@ import java.util.UUID;
 import static com.common.config.LoggingConfiguration.REQUEST_ID;
 
 @Configuration
-public class FeignConfig {
+public class CommonFeignConfig {
 
     @Bean
     Logger.Level feignLoggerLevel() {
@@ -23,6 +24,7 @@ public class FeignConfig {
     }
 
     @Bean
+    @ConditionalOnProperty("logging.feign.enable-custom-log")
     public CustomFeignRequestLogging customFeignRequestLogging() {
         return new CustomFeignRequestLogging();
     }

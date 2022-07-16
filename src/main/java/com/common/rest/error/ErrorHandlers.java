@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
-import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.common.rest.response.CommonErrorCode.*;
+import static com.common.rest.response.CommonErrorCode.BAD_REQUEST;
+import static com.common.rest.response.CommonErrorCode.SYSTEM_ERROR;
 
 @Log4j2
 @RestControllerAdvice
@@ -52,13 +52,6 @@ public class ErrorHandlers {
             mapErrMess.put("violation_" + i, violation.getMessage());
         }
         return new ResponseWrapper<>(BAD_REQUEST, mapErrMess);
-    }
-
-    @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseWrapper<Object> handleAuthorizationException(AccessDeniedException ex) {
-        log.error("Authorization Error: ", ex);
-        return new ResponseWrapper<>(FORBIDDEN);
     }
 
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
