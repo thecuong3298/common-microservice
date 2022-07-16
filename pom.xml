@@ -9,7 +9,7 @@
     </parent>
     <groupId>com.common</groupId>
     <artifactId>microservice</artifactId>
-    <version>1.2.4-SNAPSHOT</version>
+    <version>1.2.4</version>
     <name>common</name>
     <description>Base config for project microservice</description>
     <properties>
@@ -113,7 +113,7 @@
         <url>https://gitlab.com/common-lib/base-service</url>
         <connection>scm:git:https://gitlab.com/common-lib/base-service.git</connection>
         <developerConnection>scm:git:https://gitlab.com/common-lib/base-service.git</developerConnection>
-        <tag>microservice-1.2.3</tag>
+        <tag>microservice-1.2.4</tag>
     </scm>
 
     <distributionManagement>
