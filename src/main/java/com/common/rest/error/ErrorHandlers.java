@@ -64,7 +64,7 @@ public class ErrorHandlers {
     @ExceptionHandler(CommonException.class)
     public ResponseWrapper<Object> handleCommonException(CommonException e) {
         log.error("Common exception Error: ", e);
-        return new ResponseWrapper<>(e.getCode(), e.getMessage(), e.getData());
+        return new ResponseWrapper<>(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

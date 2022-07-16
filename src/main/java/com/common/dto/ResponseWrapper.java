@@ -2,7 +2,6 @@ package com.common.dto;
 
 import com.common.rest.response.CommonErrorCode;
 import com.common.rest.response.ErrorCodeResponse;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,7 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
 public class ResponseWrapper<T> {
 
     private String code;
@@ -18,12 +16,6 @@ public class ResponseWrapper<T> {
     private String message;
 
     private T data;
-
-    public ResponseWrapper(String code, String message, T data) {
-        this.code = code;
-        this.message = message;
-        this.data = data;
-    }
 
     public ResponseWrapper(T data) {
         this.data = data;
