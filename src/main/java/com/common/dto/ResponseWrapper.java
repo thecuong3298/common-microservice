@@ -2,6 +2,7 @@ package com.common.dto;
 
 import com.common.rest.response.CommonErrorCode;
 import com.common.rest.response.ErrorCodeResponse;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,10 +12,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ResponseWrapper<T> {
 
+
+    @Schema(description = "Mã lỗi", required = true, example = "200")
     private String code;
 
+    @Schema(description = "Mô tả mã lỗi", required = true, example = "Thành công")
     private String message;
 
+
+    @Schema(description = "Data")
     private T data;
 
     public ResponseWrapper(T data) {
