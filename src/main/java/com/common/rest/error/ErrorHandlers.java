@@ -10,9 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -42,7 +44,25 @@ public class ErrorHandlers {
                 .collect(Collectors.toMap(FieldError::getField, DefaultMessageSourceResolvable::getDefaultMessage)));
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseWrapper<Map<String, String>> handlerMissingRequestParameterException(
+            MissingServletRequestParameterException exception) {
+        Map<String, String> mapErrMess = new HashMap<>();
+        mapErrMess.put(exception.getParameterName(), "Không được bỏ trống");
+        return new ResponseWrapper<>(BAD_REQUEST, mapErrMess);
+    }
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseWrapper<Map<String, String>> handlerMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException exception) {
+        Map<String, String> mapErrMess = new HashMap<>();
+        mapErrMess.put(exception.getName(), "Không đúng định dạng");
+        return new ResponseWrapper<>(BAD_REQUEST, mapErrMess);
+    }
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseWrapper<Map<String, String>> handleConstrainsException(ConstraintViolationException ex) {
         log.error(ex);
